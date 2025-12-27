@@ -5,6 +5,29 @@ import { CatalogoClient } from "./CatalogoClient";
 
 export const dynamic = "force-dynamic";
 
+/* =========================
+   TIPOS LOCAIS (OBRIGATÓRIO)
+   ========================= */
+
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  imageUrl: string | null;
+  category: string | null;
+};
+
+type StoreWithProducts = {
+  id: string;
+  name: string;
+  slug: string;
+  isActive: boolean;
+  logoUrl: string | null;
+  primaryColor: string | null;
+  highlightText: string | null;
+  products: Product[];
+};
+
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
@@ -12,12 +35,30 @@ type PageProps = {
 export default async function CatalogoPublicoPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const store = await prisma.store.findUnique({
+  /* =========================
+     QUERY COM SELECT (CRÍTICO)
+     ========================= */
+
+  const store: StoreWithProducts | null = await prisma.store.findUnique({
     where: { slug },
-    include: {
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      isActive: true,
+      logoUrl: true,
+      primaryColor: true,
+      highlightText: true,
       products: {
         where: { isActive: true },
         orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          name: true,
+          price: true,
+          imageUrl: true,
+          category: true,
+        },
       },
     },
   });
