@@ -8,9 +8,7 @@ const pool = new Pool({
 
 const adapter = new PrismaPg(pool);
 
-const globalForPrisma = globalThis as unknown as {
-  prisma?: PrismaClient;
-};
+const globalForPrisma = globalThis as any;
 
 export const prisma =
   globalForPrisma.prisma ??
