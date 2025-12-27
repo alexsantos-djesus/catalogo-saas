@@ -2,7 +2,6 @@ import { auth } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import type { Store } from "@prisma/client";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -10,7 +9,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const stores: Store[] = await prisma.store.findMany({
+  const stores = await prisma.store.findMany({
     where: {
       owner: {
         email: session.user.email,
@@ -38,7 +37,7 @@ export default async function DashboardPage() {
         <p className="text-gray-500">Você ainda não criou nenhuma loja.</p>
       ) : (
         <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-          {stores.map((store: Store) => (
+          {stores.map((store) => (
             <div key={store.id} className="border rounded p-4 space-y-2">
               <h2 className="font-semibold">{store.name}</h2>
               <p className="text-sm text-gray-500">/l/{store.slug}</p>
