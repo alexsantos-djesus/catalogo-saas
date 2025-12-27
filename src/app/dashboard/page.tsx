@@ -2,9 +2,18 @@ import { auth } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@prisma/client";
 
-type Store = Prisma.StoreGetPayload<{}>;
+/**
+ * Tipo local da Store (somente o que a tela usa)
+ * NÃO depende do Prisma Client
+ * NÃO quebra no build
+ */
+type Store = {
+  id: string;
+  name: string;
+  slug: string;
+  createdAt: Date;
+};
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -20,6 +29,12 @@ export default async function DashboardPage() {
     },
     orderBy: {
       createdAt: "desc",
+    },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      createdAt: true,
     },
   });
 
