@@ -16,7 +16,7 @@ export async function GET() {
   const stores = await prisma.store.findMany({
     where: {
       owner: {
-        email: session.user.email,
+        email: user.email,
       },
     },
     orderBy: {
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       slug,
       whatsappNumber,
       owner: {
-        connect: { email: session.user.email },
+        connect: { email: user.email },
       },
     },
   });
