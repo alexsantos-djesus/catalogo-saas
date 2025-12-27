@@ -4,8 +4,10 @@ import { auth } from "@/app/api/auth/[...nextauth]/route";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -14,8 +16,14 @@ export async function PATCH(
   const body = await req.json();
 
   const product = await prisma.product.findUnique({
-    where: { id: params.id },
-    include: { store: { include: { owner: true } } },
+    where: { id },
+    include: {
+      store: {
+        include: {
+          owner: true,
+        },
+      },
+    },
   });
 
   if (!product || product.store.owner.email !== session.user.email) {
@@ -23,7 +31,7 @@ export async function PATCH(
   }
 
   const updated = await prisma.product.update({
-    where: { id: product.id },
+    where: { id },
     data: {
       name: body.name,
       price: Number(body.price),
@@ -38,16 +46,24 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const product = await prisma.product.findUnique({
-    where: { id: params.id },
-    include: { store: { include: { owner: true } } },
+    where: { id },
+    include: {
+      store: {
+        include: {
+          owner: true,
+        },
+      },
+    },
   });
 
   if (!product || product.store.owner.email !== session.user.email) {
@@ -55,7 +71,7 @@ export async function DELETE(
   }
 
   await prisma.product.delete({
-    where: { id: product.id },
+    where: { id },
   });
 
   return NextResponse.json({ ok: true });

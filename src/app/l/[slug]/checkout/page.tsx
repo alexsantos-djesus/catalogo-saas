@@ -11,23 +11,68 @@ export default function CheckoutPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
-  const [storeWhatsapp, setStoreWhatsapp] = useState<string | null>(null);
 
-  // 🔹 Buscar WhatsApp da loja
+  const [storeWhatsapp, setStoreWhatsapp] = useState<string | null>(null);
+  const [loadingStore, setLoadingStore] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // 🔹 Buscar WhatsApp da loja (API pública)
   useEffect(() => {
     if (!slug) return;
 
-    fetch(`/api/public/stores/${slug}`)
-      .then((res) => res.json())
-      .then((data) => {
+    async function loadStore() {
+      try {
+        setLoadingStore(true);
+        setError(null);
+
+        const res = await fetch(`/api/public/stores/${slug}`);
+
+        if (!res.ok) {
+          throw new Error("Loja não encontrada");
+        }
+
+        const data = await res.json();
+
+        if (!data?.whatsappNumber) {
+          throw new Error("WhatsApp da loja não configurado");
+        }
+
         setStoreWhatsapp(data.whatsappNumber);
-      });
+      } catch (err) {
+        console.error(err);
+        setError("Não foi possível carregar os dados da loja.");
+        setStoreWhatsapp(null);
+      } finally {
+        setLoadingStore(false);
+      }
+    }
+
+    loadStore();
   }, [slug]);
 
+  // 🛒 Carrinho vazio
   if (items.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>Carrinho vazio.</p>
+        <p className="text-gray-500">Carrinho vazio.</p>
+      </div>
+    );
+  }
+
+  // ⏳ Carregando dados da loja
+  if (loadingStore) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500">Carregando checkout...</p>
+      </div>
+    );
+  }
+
+  // ❌ Erro ao carregar loja
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-red-500">{error}</p>
       </div>
     );
   }
@@ -53,12 +98,12 @@ export default function CheckoutPage() {
     return encodeURIComponent(message);
   }
 
-  function handleFinish() {
+  async function handleFinish() {
     if (!storeWhatsapp) return;
 
-    const text = generateMessage();
-    const url = `https://wa.me/${storeWhatsapp}?text=${text}`;
+    const url = `https://wa.me/${storeWhatsapp}?text=${generateMessage()}`;
 
+    // 🔥 FUTURO: aqui entra Trello / salvar pedido
     clearCart();
     window.location.href = url;
   }
@@ -111,7 +156,7 @@ export default function CheckoutPage() {
       <button
         onClick={handleFinish}
         disabled={!name || !phone || !storeWhatsapp}
-        className="btn-primary w-full"
+        className="btn-primary w-full disabled:opacity-50"
       >
         Enviar pedido pelo WhatsApp
       </button>

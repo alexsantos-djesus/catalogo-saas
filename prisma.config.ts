@@ -12,7 +12,7 @@ export default defineConfig({
     url: process.env.DATABASE_URL,
   },
 
-  migrate: {
+  migrations: {
     path: "prisma/migrations",
   },
 });

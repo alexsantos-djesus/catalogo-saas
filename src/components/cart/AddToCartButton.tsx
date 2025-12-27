@@ -9,13 +9,19 @@ type Product = {
   imageUrl?: string;
 };
 
-export function AddToCartButton({ product }: { product: Product }) {
+type AddToCartButtonProps = {
+  product: Product;
+  color?: string;
+};
+
+export function AddToCartButton({ product, color }: AddToCartButtonProps) {
   const { addItem } = useCart();
 
   return (
     <button
       onClick={() => addItem(product)}
-      className="mt-2 bg-indigo-600 text-white text-sm py-1.5 rounded hover:bg-indigo-700"
+      className="w-full text-sm font-medium py-2 rounded-md text-white transition"
+      style={{ backgroundColor: color ?? "#4f46e5" }}
     >
       Adicionar ao carrinho
     </button>

@@ -68,7 +68,6 @@ export default async function CatalogoPublicoPage({ params }: PageProps) {
                 key={product.id}
                 className="bg-white rounded-xl shadow-sm hover:shadow-md transition flex flex-col overflow-hidden"
               >
-                {/* IMAGEM */}
                 {product.imageUrl && (
                   <img
                     src={product.imageUrl}
@@ -77,7 +76,6 @@ export default async function CatalogoPublicoPage({ params }: PageProps) {
                   />
                 )}
 
-                {/* INFO */}
                 <div className="p-4 flex flex-col flex-1">
                   <h2 className="font-medium text-sm text-gray-800 line-clamp-2">
                     {product.name}

@@ -19,21 +19,23 @@ export const { handlers, auth } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Senha", type: "password" },
       },
+
       async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) {
+        // ✅ validação forte (evita {} | undefined)
+        if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
+        const email = String(credentials.email);
+        const password = String(credentials.password);
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email },
         });
 
         if (!user) return null;
 
-        const isValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
+        const isValid = await bcrypt.compare(password, user.password);
 
         if (!isValid) return null;
 
