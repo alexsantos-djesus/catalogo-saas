@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+const { prisma } = await import("@/lib/prisma");
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { CatalogoClient } from "./CatalogoClient";

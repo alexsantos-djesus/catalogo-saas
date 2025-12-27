@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+const { prisma } = await import("@/lib/prisma");
 import { getSessionUser } from "@/lib/get-session-user";
 
 export async function getStoreBySlug(slug: string) {

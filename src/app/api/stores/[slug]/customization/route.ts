@@ -3,7 +3,7 @@ export const runtime = "nodejs";
 export const revalidate = 0;
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+const { prisma } = await import("@/lib/prisma");
 import { requireStoreOwner } from "@/lib/require-store-owner";
 
 export async function PATCH(

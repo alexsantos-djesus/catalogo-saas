@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+const { prisma } = await import("@/lib/prisma");
 import { getSessionUser } from "@/lib/get-session-user";
 
 /**
