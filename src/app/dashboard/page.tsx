@@ -2,6 +2,9 @@ import { auth } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
+
+type Store = Prisma.StoreGetPayload<{}>;
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -9,7 +12,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const stores = await prisma.store.findMany({
+  const stores: Store[] = await prisma.store.findMany({
     where: {
       owner: {
         email: session.user.email,
