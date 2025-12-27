@@ -1,5 +1,9 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+export const revalidate = 0;
+
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
