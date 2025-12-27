@@ -1,18 +1,15 @@
-import "dotenv/config";
-import { defineConfig } from "prisma/config";
+import { PrismaClient } from "@prisma/client";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL não está definida no .env");
+const globalForPrisma = globalThis as unknown as {
+  prisma?: PrismaClient;
+};
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    accelerateUrl: process.env.PRISMA_ACCELERATE_URL,
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
 }
-
-export default defineConfig({
-  schema: "prisma/schema.prisma",
-
-  datasource: {
-    url: process.env.DATABASE_URL,
-  },
-
-  migrations: {
-    path: "prisma/migrations",
-  },
-});
