@@ -7,7 +7,7 @@ import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 
-export const { handlers, auth } = NextAuth({
+const handler = NextAuth(() => ({
   secret: process.env.NEXTAUTH_SECRET,
 
   session: {
@@ -23,7 +23,6 @@ export const { handlers, auth } = NextAuth({
       },
 
       async authorize(credentials) {
-        // ✅ validação forte (evita {} | undefined)
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
@@ -49,6 +48,6 @@ export const { handlers, auth } = NextAuth({
       },
     }),
   ],
-});
+}));
 
-export const { GET, POST } = handlers;
+export { handler as GET, handler as POST };
