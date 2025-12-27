@@ -2,8 +2,43 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 import NextAuth from "next-auth";
-import { authConfig } from "@/lib/auth-config";
+import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
+import { prisma } from "@/lib/prisma";
 
-const handler = NextAuth(() => authConfig);
+const handler = NextAuth(() => ({
+  secret: process.env.NEXTAUTH_SECRET,
+
+  session: { strategy: "jwt" },
+
+  providers: [
+    Credentials({
+      credentials: {
+        email: { type: "email" },
+        password: { type: "password" },
+      },
+
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
+
+        if (!user) return null;
+
+        const valid = await bcrypt.compare(credentials.password, user.password);
+
+        if (!valid) return null;
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        };
+      },
+    }),
+  ],
+}));
 
 export { handler as GET, handler as POST };

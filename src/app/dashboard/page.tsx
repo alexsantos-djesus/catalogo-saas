@@ -1,7 +1,7 @@
-import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { getSessionUser } from "@/lib/get-session-user";
 
 /**
  * Tipo local da Store (somente o que a tela usa)
@@ -16,15 +16,13 @@ type Store = {
 };
 
 export default async function DashboardPage() {
-  const session = await auth();
-  if (!session?.user?.email) {
-    redirect("/login");
-  }
+  const user = await getSessionUser();
+  if (!user) redirect("/login");
 
   const stores: Store[] = await prisma.store.findMany({
     where: {
       owner: {
-        email: session.user.email,
+        email: user.email,
       },
     },
     orderBy: {

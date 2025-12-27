@@ -4,7 +4,7 @@ export const revalidate = 0;
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getSessionUser } from "@/lib/get-session-user";
 
 export async function PATCH(
   req: Request,
@@ -16,8 +16,8 @@ export async function PATCH(
 ) {
   const { id } = await params;
 
-  const session = await auth();
-  if (!session?.user?.email) {
+  const user = await getSessionUser();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -32,7 +32,7 @@ export async function PATCH(
     },
   });
 
-  if (!product || product.store.owner.email !== session.user.email) {
+  if (!product || product.store.owner.email !== user.email) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

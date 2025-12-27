@@ -1,15 +1,15 @@
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getSessionUser } from "@/lib/get-session-user";
 
 export async function requireStoreOwner(slug: string) {
-  const session = await auth();
-  if (!session?.user?.email) return null;
+  const user = await getSessionUser();
+  if (!user) return null;
 
   const store = await prisma.store.findFirst({
     where: {
       slug,
       owner: {
-        email: session.user.email,
+        email: user.email,
       },
     },
   });
