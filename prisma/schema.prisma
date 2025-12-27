@@ -4,5 +4,49 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+
+  stores    Store[]
+
+  createdAt DateTime @default(now())
+}
+
+model Store {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  whatsappNumber String
+  isActive       Boolean  @default(true)
+
+  logoUrl        String? 
+  primaryColor   String? 
+  highlightText  String?
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id])
+
+  products Product[]
+
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  imageUrl    String?
+  category    String?
+  isActive    Boolean  @default(true)
+
+  storeId String
+  store   Store @relation(fields: [storeId], references: [id])
+
+  createdAt DateTime @default(now())
 }
