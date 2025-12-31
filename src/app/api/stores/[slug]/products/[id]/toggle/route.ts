@@ -3,16 +3,12 @@ export const runtime = "nodejs";
 export const revalidate = 0;
 
 import { NextResponse } from "next/server";
-const { prisma } = await import("@/lib/prisma");
+import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/get-session-user";
 
 export async function PATCH(
   req: Request,
-  {
-    params,
-  }: {
-    params: Promise<{ slug: string; id: string }>;
-  }
+  { params }: { params: Promise<{ slug: string; id: string }> }
 ) {
   const { id } = await params;
 

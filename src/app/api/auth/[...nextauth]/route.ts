@@ -4,8 +4,9 @@ export const runtime = "nodejs";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
+import { prisma } from "@/lib/prisma";
 
-const handler = NextAuth(() => ({
+const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
 
   session: {
@@ -22,9 +23,6 @@ const handler = NextAuth(() => ({
 
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
-
-        // 🔥 IMPORT DINÂMICO (ESSENCIAL)
-        const { prisma } = await import("@/lib/prisma");
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
@@ -44,6 +42,6 @@ const handler = NextAuth(() => ({
       },
     }),
   ],
-}));
+});
 
 export { handler as GET, handler as POST };

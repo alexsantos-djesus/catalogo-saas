@@ -3,7 +3,7 @@ export const runtime = "nodejs";
 export const revalidate = 0;
 
 import { NextResponse } from "next/server";
-const { prisma } = await import("@/lib/prisma");
+import { prisma } from "@/lib/prisma";
 
 export async function GET(
   req: Request,

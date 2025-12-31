@@ -1,4 +1,4 @@
-const { prisma } = await import("@/lib/prisma");
+import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { CatalogoClient } from "./CatalogoClient";
@@ -6,7 +6,7 @@ import { CatalogoClient } from "./CatalogoClient";
 export const dynamic = "force-dynamic";
 
 /* =========================
-   TIPOS LOCAIS (OBRIGATÓRIO)
+   TIPOS LOCAIS
    ========================= */
 
 type Product = {
@@ -36,7 +36,7 @@ export default async function CatalogoPublicoPage({ params }: PageProps) {
   const { slug } = await params;
 
   /* =========================
-     QUERY COM SELECT (CRÍTICO)
+     QUERY COM SELECT (OK)
      ========================= */
 
   const store: StoreWithProducts | null = await prisma.store.findUnique({

@@ -3,7 +3,7 @@ export const runtime = "nodejs";
 export const revalidate = 0;
 
 import { NextResponse } from "next/server";
-const { prisma } = await import("@/lib/prisma");
+import { prisma } from "@/lib/prisma";
 import { requireStoreOwner } from "@/lib/require-store-owner";
 
 export async function PATCH(
@@ -13,7 +13,6 @@ export async function PATCH(
   const { slug } = await params;
 
   const store = await requireStoreOwner(slug);
-
   if (!store) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }

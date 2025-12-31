@@ -3,7 +3,7 @@ export const runtime = "nodejs";
 export const revalidate = 0;
 
 import { NextResponse } from "next/server";
-const { prisma } = await import("@/lib/prisma");
+import { prisma } from "@/lib/prisma";
 import { requireStoreOwner } from "@/lib/require-store-owner";
 
 export async function GET(
@@ -38,8 +38,6 @@ export async function POST(
     }
 
     const body = await req.json();
-
-    console.log("BODY RECEBIDO:", body);
 
     const product = await prisma.product.create({
       data: {

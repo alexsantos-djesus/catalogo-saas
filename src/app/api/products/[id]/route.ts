@@ -1,9 +1,9 @@
-export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import { NextResponse } from "next/server";
-const { prisma } = await import("@/lib/prisma");
+import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/get-session-user";
 
 export async function PATCH(

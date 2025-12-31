@@ -1,4 +1,4 @@
-const { prisma } = await import("@/lib/prisma");
+import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/get-session-user";
 
 export async function requireStoreOwner(slug: string) {

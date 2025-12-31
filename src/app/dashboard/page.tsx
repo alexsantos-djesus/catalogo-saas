@@ -1,12 +1,10 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-const { prisma } = await import("@/lib/prisma");
+import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/get-session-user";
 
 /**
  * Tipo local da Store (somente o que a tela usa)
- * NÃO depende do Prisma Client
- * NÃO quebra no build
  */
 type Store = {
   id: string;
